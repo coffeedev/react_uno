@@ -1,7 +1,7 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
 - master
@@ -9,46 +9,13 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-
-- task: SonarCloudPrepare@1
+- task: NodeTool@0
   inputs:
-    SonarCloud: 'SonarCloudAnalysis'
-    organization: 'belthur'
-    scannerMode: 'MSBuild'
-    projectKey: 'SimpleAPI_1'
-    extraProperties: |
-      sonar.exclusions=**/obj/**,**/*.dll
-      sonar.cs.vstest.reportsPaths=$(Build.SourcesDirectory)/**/TestResults/*.trx
-      sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/test/SimpleAPI.tests/coverage.opencover.xml
+    versionSpec: '12.x'
+  displayName: 'Install Node.js'
 
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-  
-# do this after other tasks such as building
-- task: DotNetCoreCLI@0
-  inputs:
-    command: test
-    projects: '**/*tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --logger trx'
-  
-- task: SonarCloudAnalyze@1
-
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
-
-- task: DotNetCoreCLI@1
-  displayName: 'dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: 'src/SimpleAPI/SimpleAPI.csproj'
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: true
-
-- task: PublishBuildArtifacts@1
-  displayName: 'publish artifacts'
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
