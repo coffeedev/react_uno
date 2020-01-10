@@ -21,6 +21,7 @@ steps:
     organization: 'belthur'
     scannerMode: 'CLI'
     configMode: 'file'
+    projectKey: 'react_uno'
     extraProperties: |
       # Additional properties that will be passed to the scanner, 
       # Put one key=value per line, example:
@@ -35,8 +36,6 @@ steps:
   displayName: 'npm install and build'
 
 - task: SonarCloudAnalyze@1
-  inputs:
-    projectKey: 'react_uno'
 
 - task: SonarCloudPublish@1
   inputs:
