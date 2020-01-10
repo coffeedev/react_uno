@@ -35,6 +35,7 @@ steps:
   displayName: 'npm install and build'
 
 - task: SonarCloudAnalyze@1
+  projectKey: 'react_uno'
 
 - task: SonarCloudPublish@1
   inputs:
