@@ -15,7 +15,27 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'ReactJS Scan'
+    organization: 'belthur'
+    scannerMode: 'CLI'
+    configMode: 'file'
+    extraProperties: |
+      # Additional properties that will be passed to the scanner, 
+      # Put one key=value per line, example:
+      sonar.exclusions=**/*.bin
+      sonar.exclusions=**/node_modules/**
+      sonar.sources = $(Build.SourcesDirectory)/src
+      sonar.javascript.file.suffixes=.js,.jsx
+
 - script: |
     npm install
     npm run build
   displayName: 'npm install and build'
+
+- task: SonarCloudAnalyze@1
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
